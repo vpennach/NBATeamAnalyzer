@@ -51,7 +51,7 @@ struct TeamAnalysisConfigCard: View {
                     .fontWeight(.medium)
                 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-                    ForEach(TeamAnalysisConfig.commonRanges, id: \.0) { range in
+                    ForEach(TeamAnalysisConfig.commonRanges(for: config.season), id: \.0) { range in
                         Button(action: {
                             config.startGame = range.1
                             config.endGame = range.2
@@ -87,6 +87,19 @@ struct TeamAnalysisConfigCard: View {
                         TextField("1", value: $config.startGame, format: .number)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .keyboardType(.numberPad)
+                            .onChange(of: config.startGame) { newValue in
+                                // Ensure start game is valid
+                                if newValue < 1 {
+                                    config.startGame = 1
+                                }
+                                if newValue > config.maxGamesForSeason {
+                                    config.startGame = config.maxGamesForSeason
+                                }
+                                // Ensure end game is not before start game
+                                if config.endGame < config.startGame {
+                                    config.endGame = config.startGame
+                                }
+                            }
                     }
                     
                     VStack(alignment: .leading, spacing: 4) {
@@ -97,6 +110,15 @@ struct TeamAnalysisConfigCard: View {
                         TextField("20", value: $config.endGame, format: .number)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .keyboardType(.numberPad)
+                            .onChange(of: config.endGame) { newValue in
+                                // Ensure end game is valid
+                                if newValue < config.startGame {
+                                    config.endGame = config.startGame
+                                }
+                                if newValue > config.maxGamesForSeason {
+                                    config.endGame = config.maxGamesForSeason
+                                }
+                            }
                     }
                     
                     Spacer()
@@ -112,6 +134,11 @@ struct TeamAnalysisConfigCard: View {
                             .foregroundColor(.orange)
                     }
                 }
+                
+                // Show max games for season
+                Text("Max games for \(TeamAnalysisConfig.seasonDisplay(config.season)): \(config.maxGamesForSeason)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
             }
         }
         .padding()
