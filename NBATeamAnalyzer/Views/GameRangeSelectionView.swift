@@ -33,9 +33,7 @@ struct GameRangeSelectionView: View {
                 
                 // Start Analysis Button
                 VStack {
-                    Button(action: {
-                        // Will navigate to analysis view in next step
-                    }) {
+                    NavigationLink(destination: AnalysisResultsView(teamConfigs: teamConfigs)) {
                         HStack {
                             Text("Start Analysis")
                                 .font(.headline)
