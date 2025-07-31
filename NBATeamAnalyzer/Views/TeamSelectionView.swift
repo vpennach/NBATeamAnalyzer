@@ -81,9 +81,7 @@ struct TeamSelectionView: View {
                 
                 // Compare Button
                 VStack {
-                    Button(action: {
-                        // Will be implemented in next step
-                    }) {
+                    NavigationLink(destination: GameRangeSelectionView(selectedTeams: Array(selectedTeams))) {
                         HStack {
                             Text("Compare Teams")
                                 .font(.headline)
