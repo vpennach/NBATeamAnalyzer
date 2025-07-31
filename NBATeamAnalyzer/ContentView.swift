@@ -1,23 +1,30 @@
-//
-//  ContentView.swift
-//  NBATeamAnalyzer
-//
-//  Created by Vincent Pennachio on 7/31/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView {
+            HomeView()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+            
+            TeamSelectionView()
+                .tabItem {
+                    Image(systemName: "basketball.fill")
+                    Text("Analyze")
+                }
+            
+            SettingsView()
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("Settings")
+                }
         }
+        .accentColor(.orange)
     }
 }
 
 #Preview {
     ContentView()
-}
+} 
