@@ -2,46 +2,48 @@ import SwiftUI
 
 struct GameRangeSelectionView: View {
     let selectedTeams: [Team]
-    @State private var selectedGames: Int = 10
+    @State private var teamConfigs: [TeamAnalysisConfig] = []
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 24) {
+            VStack(spacing: 20) {
                 // Header
                 VStack(spacing: 8) {
-                    Text("Game Range")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    
-                    Text("How many recent games to analyze?")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-                
-                // Selected Teams Summary
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Selected Teams")
+                    Text("Configure Analysis")
                         .font(.headline)
                         .fontWeight(.semibold)
                     
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-                        ForEach(selectedTeams) { team in
-                            HStack(spacing: 8) {
-                                Image(team.logoName)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 24, height: 24)
-                                
-                                Text(team.name)
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                                    .lineLimit(1)
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(8)
+                    Text("Set season and game range for each team")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top)
+                
+                // Team Configuration Cards
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach($teamConfigs) { $config in
+                            TeamAnalysisConfigCard(config: $config)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                // Analysis Summary
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "info.circle.fill")
+                            .foregroundColor(.orange)
+                        Text("Analysis Summary")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(teamConfigs) { config in
+                            Text("• \(config.team.name): \(config.season) season, last \(config.gameRange) games")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
                     }
                 }
@@ -50,36 +52,9 @@ struct GameRangeSelectionView: View {
                 .cornerRadius(12)
                 .padding(.horizontal)
                 
-                // Game Range Picker
-                GameRangePicker(selectedGames: $selectedGames)
-                    .padding(.horizontal)
-                
-                // Information about game range
-                VStack(spacing: 8) {
-                    HStack {
-                        Image(systemName: "info.circle.fill")
-                            .foregroundColor(.orange)
-                        Text("Analysis Information")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("• Analyzing \(selectedGames) most recent games")
-                        Text("• Comparing \(selectedTeams.count) teams")
-                        Text("• AI will provide performance insights")
-                    }
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                }
-                .padding()
-                .background(Color(.systemGray6).opacity(0.3))
-                .cornerRadius(12)
-                .padding(.horizontal)
-                
                 Spacer()
                 
-                // Continue Button
+                // Start Analysis Button
                 VStack {
                     Button(action: {
                         // Will navigate to analysis view in next step
@@ -98,15 +73,24 @@ struct GameRangeSelectionView: View {
                         .cornerRadius(12)
                     }
                     
-                    Text("This will analyze \(selectedGames) recent games for \(selectedTeams.count) teams")
+                    Text("Comparing \(teamConfigs.count) teams across different seasons")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.top, 4)
                 }
                 .padding()
+                .padding(.bottom, 20) // Extra padding for tab bar
             }
-            .navigationTitle("Game Range")
+            .navigationTitle("Team Configuration")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                // Initialize team configs when view appears
+                if teamConfigs.isEmpty {
+                    teamConfigs = selectedTeams.map { team in
+                        TeamAnalysisConfig(team: team)
+                    }
+                }
+            }
         }
     }
 }
