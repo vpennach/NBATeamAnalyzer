@@ -29,29 +29,6 @@ struct GameRangeSelectionView: View {
                     .padding(.horizontal)
                 }
                 
-                // Analysis Summary
-                VStack(spacing: 8) {
-                    HStack {
-                        Image(systemName: "info.circle.fill")
-                            .foregroundColor(.orange)
-                        Text("Analysis Summary")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(teamConfigs) { config in
-                            Text("• \(config.team.name): \(config.season) season, last \(config.gameRange) games")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-                .padding()
-                .background(Color(.systemGray6).opacity(0.3))
-                .cornerRadius(12)
-                .padding(.horizontal)
-                
                 Spacer()
                 
                 // Start Analysis Button
@@ -73,7 +50,7 @@ struct GameRangeSelectionView: View {
                         .cornerRadius(12)
                     }
                     
-                    Text("Comparing \(teamConfigs.count) teams across different seasons")
+                    Text("Comparing \(teamConfigs.count) teams with custom ranges")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.top, 4)
