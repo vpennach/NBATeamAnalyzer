@@ -10,7 +10,7 @@ struct HomeView: View {
                         .font(.system(size: 80))
                         .foregroundColor(.orange)
                     
-                    Text("NBA Team Analyzer - Test")
+                    Text("NBA Team Analyzer")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
@@ -23,7 +23,8 @@ struct HomeView: View {
                 // App Description
                 VStack(spacing: 12) {
                     FeatureRow(icon: "chart.bar.fill", title: "Compare Teams", description: "Select 2-4 teams to analyze")
-                    FeatureRow(icon: "clock.fill", title: "Custom Time Range", description: "Analyze 5-20 recent games")
+                    FeatureRow(icon: "calendar", title: "Custom Seasons", description: "Analyze any season from 1980-2024")
+                    FeatureRow(icon: "slider.horizontal.3", title: "Flexible Game Ranges", description: "Choose specific game ranges or recent games")
                     FeatureRow(icon: "brain.head.profile", title: "AI Insights", description: "Get intelligent performance analysis")
                 }
                 
