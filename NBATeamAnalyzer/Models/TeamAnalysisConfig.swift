@@ -33,7 +33,7 @@ struct TeamAnalysisConfig: Identifiable {
         case 1999: return 50  // 1998-99 lockout season
         case 2012: return 66  // 2011-12 lockout season  
         case 2020: return 65  // 2019-20 COVID shortened season
-        default: return 82     // Regular season
+        default: return 82     // Regular season (default)
         }
     }
 }
@@ -57,19 +57,32 @@ extension TeamAnalysisConfig {
         case 1999: return 50  // 1998-99 lockout season
         case 2012: return 66  // 2011-12 lockout season
         case 2020: return 65  // 2019-20 COVID shortened season
-        default: return 82     // Regular season
+        default: return 82     // Regular season (default)
         }
     }
     
-    // Common game ranges for quick selection
+    // Calculate 33% segments for a season
+    static func calculateSeasonSegments(for season: Int) -> (early: Int, mid: Int, late: Int) {
+        let maxGames = maxGames(for: season)
+        let oneThird = Double(maxGames) / 3.0
+        
+        let early = Int(round(oneThird))
+        let mid = Int(round(oneThird))
+        let late = maxGames - early - mid // Ensure total equals maxGames
+        
+        return (early: early, mid: mid, late: late)
+    }
+    
+    // Common game ranges for quick selection with dynamic calculations
     static func commonRanges(for season: Int) -> [(String, Int, Int)] {
         let maxGames = maxGames(for: season)
+        let segments = calculateSeasonSegments(for: season)
         
         return [
-            ("Full season", 1, maxGames),
-            ("Early season (1-25)", 1, min(25, maxGames)),
-            ("Mid season (26-50)", 26, min(50, maxGames)),
-            ("Late season (51-82)", 51, maxGames),
+            ("Full season (1-\(maxGames))", 1, maxGames),
+            ("Early season (1-\(segments.early))", 1, segments.early),
+            ("Mid season (\(segments.early + 1)-\(segments.early + segments.mid))", segments.early + 1, segments.early + segments.mid),
+            ("Late season (\(segments.early + segments.mid + 1)-\(maxGames))", segments.early + segments.mid + 1, maxGames),
             ("First 10", 1, min(10, maxGames)),
             ("Last 10", max(1, maxGames - 9), maxGames)
         ]

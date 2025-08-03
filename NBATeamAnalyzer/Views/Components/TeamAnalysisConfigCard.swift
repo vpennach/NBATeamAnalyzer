@@ -2,6 +2,12 @@ import SwiftUI
 
 struct TeamAnalysisConfigCard: View {
     @Binding var config: TeamAnalysisConfig
+    @State private var currentSeason: Int
+    
+    init(config: Binding<TeamAnalysisConfig>) {
+        self._config = config
+        self._currentSeason = State(initialValue: config.wrappedValue.season)
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -42,6 +48,12 @@ struct TeamAnalysisConfigCard: View {
                 .padding(.vertical, 8)
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
+                .onChange(of: config.season) { newSeason in
+                    currentSeason = newSeason
+                    // Reset to first 10 games when season changes
+                    config.startGame = 1
+                    config.endGame = min(10, config.maxGamesForSeason)
+                }
             }
             
             // Quick Game Range Selection
@@ -51,7 +63,7 @@ struct TeamAnalysisConfigCard: View {
                     .fontWeight(.medium)
                 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-                    ForEach(TeamAnalysisConfig.commonRanges(for: config.season), id: \.0) { range in
+                    ForEach(TeamAnalysisConfig.commonRanges(for: currentSeason), id: \.0) { range in
                         Button(action: {
                             config.startGame = range.1
                             config.endGame = range.2
@@ -144,6 +156,9 @@ struct TeamAnalysisConfigCard: View {
         .padding()
         .background(Color(.systemGray6).opacity(0.3))
         .cornerRadius(12)
+        .onAppear {
+            currentSeason = config.season
+        }
     }
     
     private func isSelected(_ range: (String, Int, Int)) -> Bool {
