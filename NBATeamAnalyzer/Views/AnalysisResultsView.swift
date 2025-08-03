@@ -6,33 +6,31 @@ struct AnalysisResultsView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                if aiService.isAnalyzing {
-                    loadingView
-                } else if !aiService.analysisResult.isEmpty {
-                    analysisView
-                } else if !aiService.errorMessage.isEmpty {
-                    errorView
-                } else {
-                    startAnalysisView
+        VStack(spacing: 0) {
+            if aiService.isAnalyzing {
+                loadingView
+            } else if !aiService.analysisResult.isEmpty {
+                analysisView
+            } else if !aiService.errorMessage.isEmpty {
+                errorView
+            } else {
+                startAnalysisView
+            }
+        }
+        .navigationTitle("Analysis Results")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("Back") {
+                    dismiss()
                 }
             }
-            .navigationTitle("Analysis Results")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Back") {
-                        dismiss()
-                    }
-                }
-                
-                if !aiService.isAnalyzing && !aiService.analysisResult.isEmpty {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Share") {
-                            // TODO: Implement share functionality
-                        }
+            
+            if !aiService.isAnalyzing && !aiService.analysisResult.isEmpty {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Share") {
+                        // TODO: Implement share functionality
                     }
                 }
             }
