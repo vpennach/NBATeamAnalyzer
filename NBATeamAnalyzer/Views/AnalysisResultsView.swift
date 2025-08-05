@@ -254,9 +254,7 @@ struct FormattedAnalysisView: View {
                     .padding(.leading, 8)
                     
                 case .paragraph:
-                    Text(section.text)
-                        .font(.body)
-                        .foregroundColor(.primary)
+                    FormattedParagraphView(text: section.text)
                         .lineSpacing(4)
                     
                 case .emphasis:
@@ -299,13 +297,11 @@ struct FormattedAnalysisView: View {
                 sections.append(ContentSection(type: .heading, text: String(trimmedLine.dropFirst(4))))
             } else if trimmedLine.hasPrefix("• ") || trimmedLine.hasPrefix("- ") {
                 sections.append(ContentSection(type: .bullet, text: String(trimmedLine.dropFirst(2))))
-            } else if trimmedLine.hasPrefix("**") && trimmedLine.hasSuffix("**") {
-                let emphasisText = String(trimmedLine.dropFirst(2).dropLast(2))
-                sections.append(ContentSection(type: .emphasis, text: emphasisText))
             } else if trimmedLine.hasPrefix("`") && trimmedLine.hasSuffix("`") {
                 let codeText = String(trimmedLine.dropFirst().dropLast())
                 sections.append(ContentSection(type: .code, text: codeText))
             } else {
+                // Handle paragraphs with inline markdown formatting
                 sections.append(ContentSection(type: .paragraph, text: trimmedLine))
             }
         }
@@ -327,6 +323,48 @@ struct ContentSection: Hashable {
         case paragraph
         case emphasis
         case code
+    }
+}
+
+// MARK: - Formatted Paragraph View
+struct FormattedParagraphView: View {
+    let text: String
+    
+    var body: some View {
+        Text(attributedString)
+            .font(.body)
+            .foregroundColor(.primary)
+    }
+    
+    private var attributedString: AttributedString {
+        var attributedString = AttributedString(text)
+        
+        // Find and style bold text (**text**)
+        let pattern = "\\*\\*(.*?)\\*\\*"
+        let regex = try! NSRegularExpression(pattern: pattern)
+        let range = NSRange(text.startIndex..., in: text)
+        
+        let matches = regex.matches(in: text, range: range)
+        
+        // Process matches in reverse order to avoid index shifting
+        for match in matches.reversed() {
+            if let range = Range(match.range, in: text),
+               let boldRange = Range(match.range(at: 1), in: text) {
+                
+                // Remove the ** markers
+                attributedString.removeSubrange(range)
+                
+                // Style the bold text
+                let boldTextRange = attributedString.index(attributedString.startIndex, offsetBy: boldRange.lowerBound.utf16Offset(in: text) - 2)
+                let boldTextEnd = attributedString.index(boldTextRange, offsetBy: boldRange.count)
+                let boldTextSubrange = boldTextRange..<boldTextEnd
+                
+                attributedString[boldTextSubrange].font = .body.weight(.semibold)
+                attributedString[boldTextSubrange].foregroundColor = .orange
+            }
+        }
+        
+        return attributedString
     }
 }
 
