@@ -30,7 +30,7 @@ struct AnalysisResultsView: View {
             if !aiService.isAnalyzing && !aiService.analysisResult.isEmpty {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Share") {
-                        // TODO: Implement share functionality
+                        ShareService.shareAnalysis(analysisResult: aiService.analysisResult, teamConfigs: teamConfigs)
                     }
                 }
             }

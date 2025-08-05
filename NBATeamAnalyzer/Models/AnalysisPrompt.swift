@@ -28,16 +28,49 @@ struct AnalysisPrompt {
         
         // Add analysis instructions
         prompt += """
-        Provide a detailed analysis including:
-        1. Who was the best team during their respective stretch and why
-        2. Who was the best player on each team during their respective stretch
-        3. Who was the best overall player during their respective stretch and why
-        4. Strengths and Weaknesses of each team
-        5. Any other interesting facts about these teams during those stretches
+        Please provide a detailed analysis with the following EXACT structure and formatting:
         
-        Please format your response using markdown with clear headings and bullet points. Use # for main titles, ## for subtitles, ### for section headings, and • for bullet points. Do NOT use bold formatting (**text**) within paragraphs - only use bold for section headings. Keep the content clean and well-structured.
+        # NBA Team Comparison Analysis
         
-        Finally do not explain your reasonings to how you discovered your findings I want it presented as a quick and meaningful information about each analysis.
+        ## Overview
+        [Brief overview of the teams being compared and the analysis period]
+        
+        ## Best Team
+        [Analysis of which team was the best during their respective stretch and why]
+        
+        ## Best Player on Each Team
+        ### [Team Name 1]
+        [Analysis of the best player on this team during their stretch]
+        
+        ### [Team Name 2]
+        [Analysis of the best player on this team during their stretch]
+        
+        [Continue for each team...]
+        
+        ## Best Overall Player
+        [Analysis of who was the best overall player across all teams and why]
+        
+        ## Strengths and Weaknesses of Each Team
+        ### [Team Name 1] Strengths and Weaknesses
+        [Analysis of this team's strengths and weaknesses during their stretch]
+        
+        ### [Team Name 2] Strengths and Weaknesses
+        [Analysis of this team's strengths and weaknesses during their stretch]
+        
+        [Continue for each team...]
+        
+        ## Other Interesting Facts
+        ### [Team Name 1]
+        [Interesting facts about this team during their stretch]
+        
+        ### [Team Name 2]
+        [Interesting facts about this team during their stretch]
+        
+        [Continue for each team...]
+        
+        IMPORTANT: Follow this EXACT structure with these EXACT section titles. Use # for main title, ## for major sections, and ### for subsections. Do NOT use bold formatting (**text**) within paragraphs - only use bold for section headings. Keep the content clean and well-structured.
+        
+        Do not explain your reasoning process - present the analysis as quick and meaningful information.
         """
         
         return prompt
@@ -54,7 +87,7 @@ struct AnalysisPrompt {
             }
         }
         
-        prompt += ". Provide a brief but insightful analysis of their performance, key differences, and what made each team special during these periods. Format your response using markdown with clear headings and bullet points. Do NOT use bold formatting within paragraphs - only use bold for section headings."
+        prompt += ". Please provide a brief but insightful analysis with the following structure:\n\n# NBA Team Comparison Analysis\n\n## Overview\n[Brief overview]\n\n## Best Team\n[Analysis]\n\n## Best Player on Each Team\n### [Team Name]\n[Analysis]\n\n## Best Overall Player\n[Analysis]\n\n## Strengths and Weaknesses of Each Team\n### [Team Name] Strengths and Weaknesses\n[Analysis]\n\n## Other Interesting Facts\n### [Team Name]\n[Facts]\n\nUse # for main title, ## for major sections, and ### for subsections. Do NOT use bold formatting within paragraphs."
         
         return prompt
     }
