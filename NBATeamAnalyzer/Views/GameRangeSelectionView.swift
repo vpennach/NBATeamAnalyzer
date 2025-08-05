@@ -32,7 +32,7 @@ struct GameRangeSelectionView: View {
             
             // Start Analysis Button
             VStack {
-                NavigationLink(destination: AnalysisResultsView(teamConfigs: teamConfigs)) {
+                NavigationLink(destination: PromptPreviewView(teamConfigs: teamConfigs)) {
                     HStack {
                         Text("Start Analysis")
                             .font(.headline)
@@ -47,7 +47,7 @@ struct GameRangeSelectionView: View {
                     .cornerRadius(12)
                 }
                 
-                Text("Comparing \(teamConfigs.count) teams with custom ranges")
+                Text("Preview the AI prompt before sending")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .padding(.top, 4)
