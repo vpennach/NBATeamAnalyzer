@@ -12,6 +12,11 @@ class AIService: ObservableObject {
     
     private let provider: AIProvider
     
+    // Get API key from environment variable
+    private var apiKey: String {
+        return ProcessInfo.processInfo.environment["XAI_API_KEY"] ?? ""
+    }
+    
     init(provider: AIProvider = .grok) {
         self.provider = provider
     }
@@ -23,11 +28,20 @@ class AIService: ObservableObject {
             errorMessage = ""
         }
         
+        // Check if API key is available
+        guard !apiKey.isEmpty else {
+            await MainActor.run {
+                self.errorMessage = "API key not found. Please set XAI_API_KEY environment variable."
+                self.isAnalyzing = false
+            }
+            return
+        }
+        
         let promptGenerator = AnalysisPrompt(teamConfigs: teamConfigs)
         let prompt = promptGenerator.generatePrompt()
         
         do {
-            let result = try await performAnalysis(prompt: prompt)
+            let result = try await callGrokAPI(prompt: prompt)
             await MainActor.run {
                 self.analysisResult = result
                 self.isAnalyzing = false
@@ -40,77 +54,86 @@ class AIService: ObservableObject {
         }
     }
     
-    private func performAnalysis(prompt: String) async throws -> String {
-        // For now, return a mock response
-        // In production, this would call the actual AI API
-        return try await mockAnalysis(prompt: prompt)
+    private func callGrokAPI(prompt: String) async throws -> String {
+        let url = URL(string: "https://api.x.ai/v1/chat/completions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.timeoutInterval = 3600 // 1 hour timeout
+        
+        // Create request body
+        let requestBody: [String: Any] = [
+            "messages": [
+                [
+                    "role": "system",
+                    "content": "You are Grok, a highly intelligent, helpful AI assistant."
+                ],
+                [
+                    "role": "user",
+                    "content": prompt
+                ]
+            ],
+            "model": "grok-4-latest",
+            "stream": false,
+            "temperature": 0
+        ]
+        
+        // Convert to JSON
+        let jsonData = try JSONSerialization.data(withJSONObject: requestBody)
+        request.httpBody = jsonData
+        
+        // Make the API call
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        // Check for HTTP errors
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "AIService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid response"])
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            let errorString = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw NSError(domain: "AIService", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "API Error: \(errorString)"])
+        }
+        
+        // Parse the response
+        let responseDict = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let choices = responseDict?["choices"] as? [[String: Any]],
+              let firstChoice = choices.first,
+              let message = firstChoice["message"] as? [String: Any],
+              let content = message["content"] as? String else {
+            throw NSError(domain: "AIService", code: 2, userInfo: [NSLocalizedDescriptionKey: "Invalid response format"])
+        }
+        
+        return content
     }
     
+    // Fallback mock implementation for testing
     private func mockAnalysis(prompt: String) async throws -> String {
         // Simulate API delay
         try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
         
-        // Return a mock analysis based on the new prompt style
+        // Return a mock analysis based on the prompt
         return """
         # NBA Team Analysis
         
-        ## Best Team During Their Stretch
-        The 2016-2017 Warriors were the best team during their analyzed stretch, demonstrating exceptional offensive efficiency and team chemistry that defined their championship season.
+        Based on your request, here's a comprehensive analysis of the selected teams:
         
-        ## Best Player on Each Team
-        • **Warriors**: Stephen Curry - Led the team in scoring and three-point shooting during this period
-        • **Lakers**: LeBron James - Dominated with all-around play and clutch performances
+        ## Performance Overview
         
-        ## Best Overall Player
-        Stephen Curry was the best overall player during his stretch, combining scoring efficiency, playmaking, and leadership that elevated his team's performance to championship level.
+        The analysis reveals fascinating insights about these teams during their specified periods. Each team demonstrated unique characteristics that defined their respective eras.
         
-        ## Strengths and Weaknesses
+        ## Key Insights
         
-        **Warriors Strengths:**
-        • Elite three-point shooting and spacing
-        • Exceptional ball movement and team chemistry
-        • Strong defensive rotations
+        • **Team Dynamics**: Each team showed distinct playing styles and strategies
+        • **Statistical Patterns**: Notable differences in scoring, defense, and efficiency
+        • **Historical Context**: These periods represent significant moments in NBA history
         
-        **Warriors Weaknesses:**
-        • Occasional defensive lapses in transition
-        • Reliance on three-point shooting variance
+        ## Comparative Analysis
         
-        **Lakers Strengths:**
-        • LeBron's all-around dominance
-        • Strong interior scoring
-        • Veteran leadership
+        The teams you've selected represent different eras and playing styles, making this comparison particularly interesting for understanding how the game has evolved.
         
-        **Lakers Weaknesses:**
-        • Inconsistent three-point shooting
-        • Defensive communication issues
-        
-        ## Interesting Facts
-        • The Warriors' stretch included several record-breaking three-point performances
-        • Both teams showed different approaches to modern NBA basketball
-        • The analyzed periods captured key moments in each team's season narrative
-        
-        *This is a mock analysis. In the full implementation, this would be generated by \(provider == .grok ? "Grok" : "ChatGPT") based on the detailed prompt.*
+        *This is a mock analysis. In the full implementation, this would be generated by Grok based on the detailed prompt.*
         """
-    }
-    
-    // Future implementation for actual API calls
-    private func callGrokAPI(prompt: String) async throws -> String {
-        // TODO: Implement actual Grok API call
-        // This would include:
-        // - API key management
-        // - HTTP request to Grok endpoint
-        // - Response parsing
-        // - Error handling
-        throw NSError(domain: "AIService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Grok API not yet implemented"])
-    }
-    
-    private func callChatGPTAPI(prompt: String) async throws -> String {
-        // TODO: Implement actual ChatGPT API call
-        // This would include:
-        // - API key management
-        // - HTTP request to OpenAI endpoint
-        // - Response parsing
-        // - Error handling
-        throw NSError(domain: "AIService", code: 2, userInfo: [NSLocalizedDescriptionKey: "ChatGPT API not yet implemented"])
     }
 } 

@@ -63,12 +63,13 @@ A modern iOS application that leverages AI to provide intelligent analysis of NB
 - **Strengths**: Bulls' defensive dominance, Warriors' three-point shooting
 - **Historical Context**: Different eras of NBA basketball evolution
 
-## 🚀 Setup Instructions
+## Setup Instructions
 
 ### **Prerequisites**
 - macOS with Xcode 15.0 or later
 - iOS Simulator or physical iOS device
 - Git for version control
+- xAI API account and API key
 
 ### **Installation Steps**
 
@@ -78,32 +79,36 @@ A modern iOS application that leverages AI to provide intelligent analysis of NB
    cd NBATeamAnalyzer
    ```
 
-2. **Open in Xcode**
+2. **Set up API Key**
+   ```bash
+   # Copy the .env template
+   cp .env.example .env
+   
+   # Edit the .env file with your API key
+   # Replace xai-[YOUR_ACTUAL_API_KEY_HERE] with your actual xAI API key
+   ```
+
+3. **Open in Xcode**
    ```bash
    open NBATeamAnalyzer.xcodeproj
    ```
 
-3. **Build and Run**
+4. **Build and Run**
    - Select your target device (iOS Simulator recommended)
    - Press `⌘ + R` or click the "Run" button
    - The app will build and launch in the simulator
 
-### **Testing the App**
+### **API Key Setup**
 
-1. **Navigate the Flow**:
-   - Tap "Start Analysis" on the home screen
-   - Select 2-4 teams from the grid
-   - Tap "Compare Teams" to proceed
+1. **Get your xAI API key** from the [xAI API Console](https://docs.x.ai/docs/tutorial)
+2. **Edit the .env file** and replace `xai-[YOUR_ACTUAL_API_KEY_HERE]` with your actual API key
+3. **The .env file is already in .gitignore** so your API key won't be committed to GitHub
 
-2. **Configure Analysis**:
-   - Choose seasons for each team (1980-2024)
-   - Select game ranges (quick options or custom)
-   - Tap "Start Analysis" to generate AI insights
-
-3. **View Results**:
-   - Wait for the 2-second mock analysis
-   - Review the formatted analysis results
-   - Check the team summary at the bottom
+**Example .env file:**
+```
+# xAI API Configuration
+XAI_API_KEY=xai-abc123def456ghi789...
+```
 
 ## Contributing
 

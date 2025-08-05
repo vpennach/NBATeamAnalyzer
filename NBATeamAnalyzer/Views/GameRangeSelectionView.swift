@@ -32,7 +32,7 @@ struct GameRangeSelectionView: View {
             
             // Start Analysis Button
             VStack {
-                NavigationLink(destination: PromptPreviewView(teamConfigs: teamConfigs)) {
+                NavigationLink(destination: AnalysisResultsView(teamConfigs: teamConfigs)) {
                     HStack {
                         Text("Start Analysis")
                             .font(.headline)
@@ -47,7 +47,7 @@ struct GameRangeSelectionView: View {
                     .cornerRadius(12)
                 }
                 
-                Text("Preview the AI prompt before sending")
+                Text("Send to Grok AI for analysis")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .padding(.top, 4)
