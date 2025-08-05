@@ -254,7 +254,9 @@ struct FormattedAnalysisView: View {
                     .padding(.leading, 8)
                     
                 case .paragraph:
-                    FormattedParagraphView(text: section.text)
+                    Text(section.text)
+                        .font(.body)
+                        .foregroundColor(.primary)
                         .lineSpacing(4)
                     
                 case .emphasis:
@@ -326,16 +328,7 @@ struct ContentSection: Hashable {
     }
 }
 
-// MARK: - Formatted Paragraph View
-struct FormattedParagraphView: View {
-    let text: String
-    
-    var body: some View {
-        Text(text)
-            .font(.body)
-            .foregroundColor(.primary)
-    }
-}
+
 
 #Preview {
     AnalysisResultsView(teamConfigs: [

@@ -48,7 +48,7 @@ struct TeamAnalysisConfigCard: View {
                 .padding(.vertical, 8)
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
-                .onChange(of: config.season) { newSeason in
+                .onChange(of: config.season) { oldSeason, newSeason in
                     currentSeason = newSeason
                     // Reset to first 10 games when season changes
                     config.startGame = 1
@@ -99,7 +99,7 @@ struct TeamAnalysisConfigCard: View {
                         TextField("1", value: $config.startGame, format: .number)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .keyboardType(.numberPad)
-                            .onChange(of: config.startGame) { newValue in
+                            .onChange(of: config.startGame) { oldValue, newValue in
                                 // Ensure start game is valid
                                 if newValue < 1 {
                                     config.startGame = 1
@@ -122,7 +122,7 @@ struct TeamAnalysisConfigCard: View {
                         TextField("20", value: $config.endGame, format: .number)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .keyboardType(.numberPad)
-                            .onChange(of: config.endGame) { newValue in
+                            .onChange(of: config.endGame) { oldValue, newValue in
                                 // Ensure end game is valid
                                 if newValue < config.startGame {
                                     config.endGame = config.startGame
