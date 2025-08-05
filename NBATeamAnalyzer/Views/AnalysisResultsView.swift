@@ -128,10 +128,8 @@ struct AnalysisResultsView: View {
                 .padding(.horizontal)
                 .padding(.top)
                 
-                // Analysis Content
-                Text(aiService.analysisResult)
-                    .font(.body)
-                    .lineSpacing(4)
+                // Analysis Content with formatted display
+                FormattedAnalysisView(content: aiService.analysisResult)
                     .padding(.horizontal)
                 
                 // Team Summary
@@ -210,6 +208,125 @@ struct AnalysisResultsView: View {
             .padding(.horizontal)
             .padding(.bottom, 20)
         }
+    }
+}
+
+// MARK: - Formatted Analysis View
+struct FormattedAnalysisView: View {
+    let content: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            ForEach(parseContent(), id: \.self) { section in
+                switch section.type {
+                case .title:
+                    Text(section.text)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.primary)
+                        .padding(.top, 8)
+                    
+                case .subtitle:
+                    Text(section.text)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                        .padding(.top, 4)
+                    
+                case .heading:
+                    Text(section.text)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                        .padding(.top, 12)
+                    
+                case .bullet:
+                    HStack(alignment: .top, spacing: 8) {
+                        Text("•")
+                            .font(.body)
+                            .foregroundColor(.orange)
+                            .fontWeight(.bold)
+                        
+                        Text(section.text)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.leading, 8)
+                    
+                case .paragraph:
+                    Text(section.text)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                        .lineSpacing(4)
+                    
+                case .emphasis:
+                    Text(section.text)
+                        .font(.body)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.orange)
+                    
+                case .code:
+                    Text(section.text)
+                        .font(.system(.body, design: .monospaced))
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(6)
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color(.systemGray4), lineWidth: 1)
+        )
+    }
+    
+    private func parseContent() -> [ContentSection] {
+        var sections: [ContentSection] = []
+        let lines = content.components(separatedBy: .newlines)
+        
+        for line in lines {
+            let trimmedLine = line.trimmingCharacters(in: .whitespaces)
+            if trimmedLine.isEmpty { continue }
+            
+            if trimmedLine.hasPrefix("# ") {
+                sections.append(ContentSection(type: .title, text: String(trimmedLine.dropFirst(2))))
+            } else if trimmedLine.hasPrefix("## ") {
+                sections.append(ContentSection(type: .subtitle, text: String(trimmedLine.dropFirst(3))))
+            } else if trimmedLine.hasPrefix("### ") {
+                sections.append(ContentSection(type: .heading, text: String(trimmedLine.dropFirst(4))))
+            } else if trimmedLine.hasPrefix("• ") || trimmedLine.hasPrefix("- ") {
+                sections.append(ContentSection(type: .bullet, text: String(trimmedLine.dropFirst(2))))
+            } else if trimmedLine.hasPrefix("**") && trimmedLine.hasSuffix("**") {
+                let emphasisText = String(trimmedLine.dropFirst(2).dropLast(2))
+                sections.append(ContentSection(type: .emphasis, text: emphasisText))
+            } else if trimmedLine.hasPrefix("`") && trimmedLine.hasSuffix("`") {
+                let codeText = String(trimmedLine.dropFirst().dropLast())
+                sections.append(ContentSection(type: .code, text: codeText))
+            } else {
+                sections.append(ContentSection(type: .paragraph, text: trimmedLine))
+            }
+        }
+        
+        return sections
+    }
+}
+
+// MARK: - Content Section Types
+struct ContentSection: Hashable {
+    let type: ContentType
+    let text: String
+    
+    enum ContentType {
+        case title
+        case subtitle
+        case heading
+        case bullet
+        case paragraph
+        case emphasis
+        case code
     }
 }
 

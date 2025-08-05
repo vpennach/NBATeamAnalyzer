@@ -67,7 +67,7 @@ class AIService: ObservableObject {
             "messages": [
                 [
                     "role": "system",
-                    "content": "You are Grok, a highly intelligent, helpful AI assistant."
+                    "content": "You are Grok, a highly intelligent, helpful AI assistant. When providing analysis, please format your response using markdown with clear headings, bullet points, and emphasis where appropriate. Use # for main titles, ## for subtitles, ### for section headings, • for bullet points, **bold** for emphasis, and ensure the content is well-structured and easy to read."
                 ],
                 [
                     "role": "user",

@@ -35,6 +35,8 @@ struct AnalysisPrompt {
         4. Strengths and Weaknesses of each team
         5. Any other interesting facts about these teams during those stretches
         
+        Please format your response using markdown with clear headings, bullet points, and emphasis where appropriate. Use # for main titles, ## for subtitles, ### for section headings, • for bullet points, **bold** for emphasis, and ensure the content is well-structured and easy to read.
+        
         Finally do not explain your reasonings to how you discovered your findings I want it presented as a quick and meaningful information about each analysis.
         """
         
@@ -52,7 +54,7 @@ struct AnalysisPrompt {
             }
         }
         
-        prompt += ". Provide a brief but insightful analysis of their performance, key differences, and what made each team special during these periods."
+        prompt += ". Provide a brief but insightful analysis of their performance, key differences, and what made each team special during these periods. Format your response using markdown with clear headings and bullet points for easy reading."
         
         return prompt
     }
