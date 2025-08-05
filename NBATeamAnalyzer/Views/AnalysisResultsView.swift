@@ -106,6 +106,39 @@ struct AnalysisResultsView: View {
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                
+                // Teams being analyzed
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Teams Being Analyzed")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    ForEach(teamConfigs) { config in
+                        HStack {
+                            Image(config.team.logoName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 30, height: 30)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(config.team.fullName)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                
+                                Text("\(TeamAnalysisConfig.seasonDisplay(config.season)) • \(config.gameRangeDisplay)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal)
             }
             
             Spacer()

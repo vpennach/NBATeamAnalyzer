@@ -16,7 +16,9 @@ struct TeamAnalysisConfig: Identifiable {
     
     // Computed property for display
     var gameRangeDisplay: String {
-        if startGame == 1 {
+        if startGame == 1 && endGame == maxGamesForSeason {
+            return "Full Season"
+        } else if startGame == 1 {
             return "Last \(endGame) games"
         } else {
             return "Games \(startGame)-\(endGame)"

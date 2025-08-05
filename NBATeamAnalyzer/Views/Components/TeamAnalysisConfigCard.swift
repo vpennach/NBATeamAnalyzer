@@ -50,9 +50,9 @@ struct TeamAnalysisConfigCard: View {
                 .cornerRadius(8)
                 .onChange(of: config.season) { oldSeason, newSeason in
                     currentSeason = newSeason
-                    // Reset to first 10 games when season changes
+                    // Reset to full season when season changes
                     config.startGame = 1
-                    config.endGame = min(10, config.maxGamesForSeason)
+                    config.endGame = config.maxGamesForSeason
                 }
             }
             
