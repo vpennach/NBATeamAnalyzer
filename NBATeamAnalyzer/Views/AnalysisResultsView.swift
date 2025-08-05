@@ -331,40 +331,9 @@ struct FormattedParagraphView: View {
     let text: String
     
     var body: some View {
-        Text(attributedString)
+        Text(text)
             .font(.body)
             .foregroundColor(.primary)
-    }
-    
-    private var attributedString: AttributedString {
-        var attributedString = AttributedString(text)
-        
-        // Find and style bold text (**text**)
-        let pattern = "\\*\\*(.*?)\\*\\*"
-        let regex = try! NSRegularExpression(pattern: pattern)
-        let range = NSRange(text.startIndex..., in: text)
-        
-        let matches = regex.matches(in: text, range: range)
-        
-        // Process matches in reverse order to avoid index shifting
-        for match in matches.reversed() {
-            if let range = Range(match.range, in: text),
-               let boldRange = Range(match.range(at: 1), in: text) {
-                
-                // Remove the ** markers
-                attributedString.removeSubrange(range)
-                
-                // Style the bold text
-                let boldTextRange = attributedString.index(attributedString.startIndex, offsetBy: boldRange.lowerBound.utf16Offset(in: text) - 2)
-                let boldTextEnd = attributedString.index(boldTextRange, offsetBy: boldRange.count)
-                let boldTextSubrange = boldTextRange..<boldTextEnd
-                
-                attributedString[boldTextSubrange].font = .body.weight(.semibold)
-                attributedString[boldTextSubrange].foregroundColor = .orange
-            }
-        }
-        
-        return attributedString
     }
 }
 

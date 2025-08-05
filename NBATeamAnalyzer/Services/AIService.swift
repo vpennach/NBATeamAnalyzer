@@ -67,7 +67,7 @@ class AIService: ObservableObject {
             "messages": [
                 [
                     "role": "system",
-                    "content": "You are Grok, a highly intelligent, helpful AI assistant. When providing analysis, please format your response using markdown with clear headings, bullet points, and emphasis where appropriate. Use # for main titles, ## for subtitles, ### for section headings, • for bullet points, **bold** for emphasis, and ensure the content is well-structured and easy to read."
+                    "content": "You are Grok, a highly intelligent, helpful AI assistant. When providing analysis, please format your response using markdown with clear headings and bullet points. Use # for main titles, ## for subtitles, ### for section headings, and • for bullet points. Do NOT use bold formatting (**text**) within paragraphs - only use bold for section headings. Keep the content clean and well-structured."
                 ],
                 [
                     "role": "user",
