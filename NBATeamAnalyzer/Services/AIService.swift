@@ -12,9 +12,9 @@ class AIService: ObservableObject {
     
     private let provider: AIProvider
     
-    // Get API key from environment variable
+    // Get API key from UserDefaults (set via SettingsView)
     private var apiKey: String {
-        return ProcessInfo.processInfo.environment["XAI_API_KEY"] ?? ""
+        return UserDefaults.standard.string(forKey: "XAI_API_KEY") ?? ""
     }
     
     init(provider: AIProvider = .grok) {
@@ -31,7 +31,7 @@ class AIService: ObservableObject {
         // Check if API key is available
         guard !apiKey.isEmpty else {
             await MainActor.run {
-                self.errorMessage = "API key not found. Please set XAI_API_KEY environment variable."
+                self.errorMessage = "API key not found. Please set your API key in the Settings tab."
                 self.isAnalyzing = false
             }
             return

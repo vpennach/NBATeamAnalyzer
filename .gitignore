@@ -1,1 +1,13 @@
-.env
+# Xcode
+.DS_Store
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Build artifacts
+build/
+DerivedData/
+
+# Swift Package Manager
+.swiftpm/ 

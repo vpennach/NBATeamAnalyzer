@@ -79,21 +79,12 @@ A modern iOS application that leverages AI to provide intelligent analysis of NB
    cd NBATeamAnalyzer
    ```
 
-2. **Set up API Key**
-   ```bash
-   # Copy the .env template
-   cp .env.example .env
-   
-   # Edit the .env file with your API key
-   # Replace xai-[YOUR_ACTUAL_API_KEY_HERE] with your actual xAI API key
-   ```
-
-3. **Open in Xcode**
+2. **Open in Xcode**
    ```bash
    open NBATeamAnalyzer.xcodeproj
    ```
 
-4. **Build and Run**
+3. **Build and Run**
    - Select your target device (iOS Simulator recommended)
    - Press `⌘ + R` or click the "Run" button
    - The app will build and launch in the simulator
@@ -101,14 +92,11 @@ A modern iOS application that leverages AI to provide intelligent analysis of NB
 ### **API Key Setup**
 
 1. **Get your xAI API key** from the [xAI API Console](https://docs.x.ai/docs/tutorial)
-2. **Edit the .env file** and replace `xai-[YOUR_ACTUAL_API_KEY_HERE]` with your actual API key
-3. **The .env file is already in .gitignore** so your API key won't be committed to GitHub
+2. **Open the app** and navigate to the Settings tab
+3. **Enter your API key** in the secure text field
+4. **Tap "Save API Key"** to store it securely in the app
 
-**Example .env file:**
-```
-# xAI API Configuration
-XAI_API_KEY=xai-abc123def456ghi789...
-```
+**Note**: Your API key is stored securely in the app's UserDefaults and is never shared or transmitted outside the app.
 
 ## Contributing
 
